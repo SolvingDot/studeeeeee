@@ -670,6 +670,14 @@ public static void isDistinct(String input) {
   }
 }
 
+    // 리스트에 중복된 값이 있으면 false
+    private void checkSameNumber(List<Integer> numbers) {
+        if (numbers.stream().distinct().count() != LottoStatus.SIZE) {
+            throw new IllegalArgumentException(Error.DUPLICATE_NUMBERS);
+        }
+    }
+
+
 // 중복 2개까지만 허용하여 추천하기
 public class CategoryRecommender {
     private static final int MINIMUM = 1;
