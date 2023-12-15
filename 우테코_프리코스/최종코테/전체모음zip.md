@@ -17,6 +17,7 @@
 - [FileReader 사용법](#file-reader)
 - [검증로직들](#검증로직들)
 - [깃허브](#깃허브)
+- [테스트코드](#테스트코드)
 
 ## speedy
 
@@ -306,6 +307,65 @@ public abstract class Validator {
             throw new IllegalArgumentException(ErrorMessage.INVALID_NOT_NUMERIC.getMessage());
         }
     }
+    
+    // 아무 입력 없음 예외 발생
+    private static void validateEmptyInput(String input) {
+        if (input.isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessage.EMPTY_INPUT.getMessage());
+        }
+    }
+    
+    // 맨 끝에 쉼표로 끝나면 예외 발생
+    private static void validateEndWithComma(String input) {
+        if (input.endsWith(COMMA)) {
+            throw new IllegalArgumentException(ErrorMessage.COMMA_PLACE.getMessage());
+        }
+    }
+    
+    // 리스트 안에 빈값 있으면 예외 발생
+    private static void validateEmptyName(List<String> names) {
+        if (names.contains(EMPTY)) {
+            throw new IllegalArgumentException(ErrorMessage.COMMA_PLACE.getMessage());
+        }
+    }
+    
+    // 입력값에 띄어쓰기(예: "포 비") 있으면 예외 발생
+    private static void validateNameHasBlank(String name) {
+        if (name.contains(BLANK)) {
+            throw new IllegalArgumentException(ErrorMessage.SPACE.getMessage());
+        }
+    }
+    
+    // size, length 검증
+    private static void validateNumberOfNames(List<String> names) {
+        if (names.size() < MINIMUM_SIZE || names.size() > MAXIMUM_SIZE) {
+            throw new IllegalArgumentException(ErrorMessage.NUMBER_OF_NAMES.getMessage());
+        }
+    }
+    
+    private static void validateNameLength(String name) {
+        if (name.length() < MINIMUM_LENGTH || name.length() > MAXIMUM_LENGTH) {
+            throw new IllegalArgumentException(ErrorMessage.LENGTH_OF_NAME.getMessage());
+        }
+    }
+
+    // Enum 안에 있는 값인지 검증
+    private void validateFoodAversionIsInMenu(List<String> foodAversions) {
+        for (String food : foodAversions) {
+            if (!isInMenu(food)) {
+                throw new IllegalArgumentException(ErrorMessage.FOOD_OUT_OF_MENU.getMessage());
+            }
+        }
+    }
+
+    private boolean isInMenu(String food) {
+        for (FoodCategory foodCategory : FoodCategory.values()) {
+            if (foodCategory.getMenu().contains(food)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     void validateRange(String input) {
         try {
@@ -573,7 +633,7 @@ if (!MONEY_REGEX.matcher(input).matches()) {
         }
 ```
 
-- 1부터 9까지의 자연수
+- 1부터 9까지의 자연수 (빈값 허용하지 않음)
 
 ```
 "^[1-9]+$"
@@ -608,6 +668,35 @@ public static void isDistinct(String input) {
   if (count != ConstVariable.SIZE.getValue()) {
       throw new IllegalArgumentException();
   }
+}
+
+// 중복 2개까지만 허용하여 추천하기
+public class CategoryRecommender {
+    private static final int MINIMUM = 1;
+    private static final int MAXIMUM = 5;
+    private static final int DUPLICATE_LIMIT = 2;
+
+    public List<String> recommend() {
+        List<String> categories = new ArrayList<>();
+        while (categories.size() < MAXIMUM) {
+            String category = readCategory();
+            if (isNotDublicatedTwice(categories, category)) {
+                categories.add(category);
+            }
+        }
+        return categories;
+    }
+
+    private String readCategory() {
+        return FoodCategory.getCategoryByNumber(Randoms.pickNumberInRange(MINIMUM, MAXIMUM));
+    }
+
+    // 중복 몇 개인지 세어서 2개 미만이면 true 반환
+    private boolean isNotDublicatedTwice(List<String> categories, String category) {
+        return categories.stream()
+                .filter(name -> name.equals(category))
+                .count() < DUPLICATE_LIMIT;
+    }
 }
  ```
 
@@ -702,4 +791,74 @@ git commit -am "커밋 메세지" {파일이름}
 
 // 특정 파일 unstaged 상태 만들기
 git restore --staged {파일이름}
+```
+
+## 테스트코드
+
+```
+    // 여러 예외 발생 상황을 테스트
+    @DisplayName("빈칸, 숫자 아님, 범위 벗어남 -> 예외 발생(예외 메시지는 '[ERROR]'로 시작)")
+    @ValueSource(strings = {"", "abc", "1 1", "0", "32"})
+    @ParameterizedTest
+    void 예외_발생_테스트(String input) {
+        // Given
+        Date date = new Date();
+
+        // When, Then
+        assertThatThrownBy(() -> date.read(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("[ERROR]");
+    }
+
+    @DisplayName("문자열을 숫자로 변환")
+    @Test
+    void 기능_테스트() {
+        // Given
+        Date date = new Date();
+
+        // When
+        int visitDate = date.read("25");
+
+        // Then
+        assertThat(visitDate).isEqualTo(25);
+    }
+
+    @DisplayName("여러 경우에 같은 값 리턴")
+    @ValueSource(ints = {26, 27, 28, 29, 30, 31})
+    @ParameterizedTest
+    void 할인_미적용_테스트(int ints) {
+        // Given
+        ChristmasDdayDiscount discount = new ChristmasDdayDiscount();
+
+        // When
+        int discountAmount = discount.apply(ints);
+
+        // Then
+        assertThat(discountAmount).isEqualTo(0);
+    }
+
+```
+
+- 전 범위 중 조건에 맞는 경우만 테스트할 경우 @MethodSource와 assumeTrue 활용하기.
+
+```
+    // 파라미터로 사용할 전체 범위 설정
+    private static IntStream provideAllDatesInDecember() {
+        return IntStream.rangeClosed(EventDate.FIRST_DAY, EventDate.LAST_DAY);
+    }
+
+    @DisplayName("별이 있는 날짜가 아니면 할인 금액은 0원이다")
+    @MethodSource("provideAllDatesInDecember") // 전체 12월 날짜 중에
+    @ParameterizedTest
+    void 할인_미적용_테스트(int date) {
+        assumeTrue(!EventDate.SPECIAL_DAY.contains(date)); // 스페셜 데이에 포함되지 않는 경우만 테스트
+        // Given
+        SpecialDiscount specialDiscount = new SpecialDiscount();
+
+        // When
+        int discountAmount = specialDiscount.apply(date);
+
+        // Then
+        assertThat(discountAmount).isEqualTo(0);
+    }
 ```
