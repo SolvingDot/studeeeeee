@@ -1,6 +1,6 @@
 ## 먼저!!!
 
-> 1. 깃허브: **Fork**하기 => **Clone**하기 (깃허브 desktop) => **eunkeee 브랜치** 만들기 => **_initial commit 하고 확인_** 꼭!!! (Pull
+> 1. 깃허브: **Fork**하기 => **Clone**하기 (깃허브 desktop) => **SolvingDot 브랜치** 만들기 => **_initial commit 하고 확인_** 꼭!!! (Pull
      Request 보내지는지도!!)
 > - 꼭!!!!! Application, ApplicationTest 둘 다 돌아가는지 부터 확인!!!
 > 2. 설계에 공들이자, 계속 고치는 대공사보다 설계에 공들이는게 더 빠르다
@@ -12,9 +12,8 @@
 - [SPEEDY](#speedy)
 - [Controller 로직](#로직-controller)
 - [Enum 관리](#enum)
-- [Repository 사용법](#repository)
-- [ResultFormatter](#result-formatter)
-- [Big Decimal 사용법](#big-decimal)
+- [Decimal Format](#Decimal Format)
+- [재입력 로직](#재입력 로직)
 - [FileReader 사용법](#file-reader)
 - [검증로직들](#검증로직들)
 - [깃허브](#깃허브)
@@ -28,6 +27,87 @@
 - 복잡한 문제라면 **플로우차트**를 그린다
 - 어떤 클래스가 어떤 데이터를 담아야 하는지 **코드 짜기 _전에_ 생각한다!!!**
 - 가능하면 출력해야 하는 내용을 **`view`에 복붙**하면서 작성하자!!! => 집착은 X
+
+### 기능목록 형식 (복붙해서 수정하기)
+
+```
+# 프로젝트: 12월 이벤트 플래너
+
+## 프로젝트 소개
+- 12월 이벤트 플래너를 구현하는 프로젝트입니다.
+
+## 12월 이벤트 플래너 설명
+
+### 플래너 사용 절차 요약
+1. 사용자는 예상 방문 날짜를 입력한다.
+2. 사용자는 주문할 메뉴와 개수를 입력한다.
+3. 프로그램은 날짜, 메뉴, 메뉴 개수를 토대로 적용되는 이벤트 혜택을 다음과 같이 보여준다.
+  - 주문한 메뉴를 보여준다.
+  - 할인 전 총 주문 금액을 보여준다.
+  - 증정 메뉴를 보여준다.
+  - 이벤트 혜택 내역을 보여준다.
+  - 총 혜택 금액을 보여준다.
+  - 할인 적용 후 예상 결제 금액을 보여준다.
+  - 12월 이벤트 배지를 보여준다.
+
+## 기능 목록
+
+### 핵심 기능
+
+- 한줄 요약: 사용자가 날짜와 메뉴를 입력하면 이벤트 혜택 적용 결과를 알려준다.
+
+## 기능 목록
+
+### 핵심 기능
+
+- 한줄 요약: 한 주 동안의 점심 메뉴를 중복되지 않게 추천한다.
+
+#### 코치 이름(입력1)
+- [x] 빈값일 때 예외 발생.
+- [x] 코치 이름은 쉼표로 구분한다.
+  - [x] 구분했을 때 빈값이 있으면 예외 발생.
+  - [x] 구분했을 때 코치 이름이 2명 미만, 5명 초과일 경우 예외 발생.
+  - [x] 코치 이름에 빈칸(띄어쓰기)이 있을 경우 예외 발생.
+  - [x] 코치 이름이 2글자 미만, 4글자 초과일 경우 예외 발생.
+
+#### 못 먹는 메뉴(입력2)
+- [x] 각 코치는 최소 0개, 최대 2개의 못 먹는 메뉴가 있다. (`,` 로 구분해서 입력한다.)
+    - [x] 먹지 못하는 메뉴가 없으면 빈 값을 입력한다.
+    - [x] 3개 이상을 입력했을 때 예외 발생.
+- [x] 메뉴에 없는 입력은 예외 발생.
+
+#### 메뉴 카테고리
+
+- 카테고리를 무작위로 정한다.
+  - 1에서 5까지의 무작위 숫자를 생성한다.
+  - 요일별로 반복한다.
+  - 3회 이상 중복이면 다시 임의의 숫자를 생성한다.
+  - 무작위 값이 1이면 일식, 2면 한식, 3이면 중식, 4면 아시안, 5면 양식이다.
+
+#### 메뉴 추천
+
+- 메뉴를 추천하는 과정은 아래와 같이 이뤄진다.
+  - [x] 월요일 카테고리를 가져온다.
+    - [x] 해당 카테고리의 메뉴를 섞어서 첫번째 코치에게 추천한다.
+      - [x] 추천한 메뉴가 못 먹는 메뉴이면 다시 섞어서 추천한다.
+      - [x] 추천한 메뉴가 중복이면 다시 섞어서 추천한다.
+    - [x] 다음 코치에게 같은 과정을 반복한다.
+  - [x] 화, 수, 목, 금요일에 대해 같은 과정을 반복한다.
+
+## 개발 과정
+
+#### <Programming process>
+
+---
+    Write small but useful program everday.
+---
+
+1. 핵심 기능을 한 문장으로 정의하기.
+2. 핵심 기능이 동작 가능한 가장 작은 버전부터 만들기.
+- 작은 기능을 커밋 메시지 용으로 미리 적어놓기.
+3. 작은 기능을 테스트하기.
+4. 커밋 메시지를 달성했다면 커밋하기.
+```
 
 #### 패키지 나누기
 
@@ -51,16 +131,11 @@ public class OutputView {
   }
   private OutputView() {
   }
-  
-    // static이면 이 위에 지우고 아래를 static으로 만들면됨
     
   public void printGameStart() {
     System.out.println(Message.OUTPUT_GAME_START.message);
+    System.out.println(); // 출력하고 한줄 띄우기 (선택)
   }
-
-    public void printExceptionMessage(Exception exception) {
-        System.out.println(exception.getMessage());
-    }
 
   private enum Message {
         OUTPUT_GAME_START("게임을 시작합니다.");
@@ -71,8 +146,6 @@ public class OutputView {
             this.message = message;
         }
     }
-
-
 }
 ```
 
@@ -81,19 +154,18 @@ public class OutputView {
 ```
 public class InputView {
 
-     private static final InputView instance = new InputView();
+    private static final InputView instance = new InputView();
 
     public static InputView getInstance(){
         return instance;
     }
     private InputView() {
     }
-    
-    // static이면 이 위에 지우고 아래를 static으로 만들면됨
 
     public String readMainOption() {
         System.out.println(Message.INPUT_MAIN_OPTION.message);
         String input = Console.readLine();
+        System.out.println(); // 입력 받고 한줄 띄우기
         return input;
     }
 
@@ -130,8 +202,6 @@ public class Application {
 - 일단은 전체 `MainController`에 만들고 나중에 필요하면 다른 Controller를 만들어서 분리하자
 - 게임에 필요한 다른 변수들이 많으면 `MainVariable` 클래스 생성을 고려한다.
 
-- [Controller 로직](#로직-controller)를 참고하자
-
 ##### 아무런 리팩터링도 고려하지 않은 간단 ver.
 
 ```
@@ -156,7 +226,7 @@ public class MainController {
 #### ExceptionMessage
 
 ```
-public enum ExceptionMessage {
+public enum ErrorMessage {
 
     INVALID_NOT_NUMERIC("자연수만 입력 가능합니다."),
     INVALID_OUT_OF_INT_RANGE("입력 범위를 초과하였습니다.");
@@ -164,8 +234,8 @@ public enum ExceptionMessage {
     public static final String BASE_MESSAGE = "[ERROR] %s";
     private final String message;
 
-    ExceptionMessage(String message, Object... replaces) {
-        this.message = String.format(BASE_MESSAGE, String.format(message, replaces));
+    ErrorMessage(String message) {
+        this.message = String.format(BASE_MESSAGE, message);
     }
 
     public String getMessage() {
@@ -175,7 +245,7 @@ public enum ExceptionMessage {
 ```
 
 - 예외를 던지는 곳에서
-  `throw new IllegalArgumentException(ExceptionMessage.~~.getMessage());`
+  `throw new IllegalArgumentException(ErrorMessage.~~.getMessage());`
 
 ## Util
 
@@ -194,7 +264,7 @@ public class Util {
     }
 
     public static List<String> splitByComma(String input) {
-        return Arrays.asList(Util.removeSpace(input).split(Regex.COMMA.regex));
+        return Arrays.asList(input.split(Regex.COMMA.regex));
     }
 
     public static List<String> formatProductInfo(String input) {
@@ -220,6 +290,7 @@ public class Util {
 ```
 
 ## Validation
+- 각 클래스에서 담당하도록 먼저 접근해보고, 너무 많이 겹치면 리팩토링 때 Validation 클래스로 묶어보자.
 
 #### Validator 추상메서드 생성
 
@@ -232,7 +303,7 @@ public abstract class Validator {
 
        void validateNumeric(String input) {
         if (!NUMBER_REGEX.matcher(input).matches()) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_NOT_NUMERIC.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.INVALID_NOT_NUMERIC.getMessage());
         }
     }
 
@@ -240,7 +311,7 @@ public abstract class Validator {
         try {
             Integer.parseInt(input);
         } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_OUT_OF_INT_RANGE.getMessage(), exception);
+            throw new IllegalArgumentException(ErrorMessage.INVALID_OUT_OF_INT_RANGE.getMessage(), exception);
         }
     }
 
@@ -258,72 +329,6 @@ public abstract class Validator {
         Range(int value) {
             this.value = value;
         }
-    }
-}
-```
-
-#### 자손 클래스로 구체화
-
-```
-public class BridgeSizeValidator extends Validator {
-
-    @Override
-    public void validate(String input) throws IllegalArgumentException {
-       // 검증 로직 작성
-    }
-
-```
-
-- 테스트 코드도 동시에 작성
-    - `removeSpace`는 `inputView`에서 이미 행하고 나서 들어오는 것이기 때문에 여기서는 공백 제거를 테스트하면 안됨
-
-```
-class BudgetValidatorTest {
-
-    private BudgetValidator budgetValidator;
-
-    @BeforeEach
-    void setUp() {
-        budgetValidator = new BudgetValidator();
-    }
-
-    @Nested
-    class invalidInputTest {
-
-        @ParameterizedTest
-        @ValueSource(strings = {"한글", "moonja", "-1000", "-2322190000"})
-        @DisplayName("자연수가 아닌 입력의 경우 예외 처리한다.")
-        void 자연수가_아닌_입력(String input) {
-            assertThatIllegalArgumentException()
-                    .isThrownBy(() -> validator.validate(input))
-                    .withMessageStartingWith(ExceptionMessage.INVALID_NOT_NUMERIC.getMessage());
-        }
-
-        //   assertThatThrownBy(() -> budgetValidator.validate(input))
-        //            .isInstanceOf(IllegalArgumentException.class)
-        //            .hasMessage(ExceptionMessage.OUT_OF_RANGE.getMessage());
-
-
-        @ParameterizedTest
-        @ValueSource(strings = {"2222222222222222222222222222000", "1294013905724312349120948120000"})
-        @DisplayName("int 범위를 초과한 입력의 경우 예외 처리한다.")
-        void int_범위를_벗어난_입력(String input) {
-            assertThatIllegalArgumentException()
-                    .isThrownBy(() -> budgetValidator.validate(input))
-                    .withMessageStartingWith(ExceptionMessage.INVALID_OUT_OF_INT_RANGE.getMessage());
-        }
-
-    }
-
-    @Nested
-    class validInputTest {
-        @ParameterizedTest
-        @ValueSource(strings = {"222000", "22222000", " 1000"})
-        void 정상_입력(String input) {
-            assertThatCode(() -> budgetValidator.validate(input))
-                    .doesNotThrowAnyException();
-        }
-
     }
 }
 ```
@@ -359,511 +364,170 @@ public class Constants {
     }
 ```
 
-### Enum 클래스 관리
-
-#### Command 관리!!! (사용자가 입력한 옵션)
-
-```
-public enum MainOption {
-    PAIR_MATCHING("1"),
-    QUIT("Q");
-
-    private final String command;
-
-    MainOption(String command) {
-        this.command = command;
-    }
-
-    public static MainOption from(String command) {
-        return Arrays.stream(MainOption.values())
-                .filter(option -> option.command.equals(command))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NO_MAIN_OPTION.getMessage()));
-    }
-
-    // NO_MAIN_OPTION => "해당하는 메인 옵션이 존재하지 않습니다."
-
-    public boolean continueMain() {
-        return this != QUIT;
-    }
-
-}
-```
-
---- 
-
-## 로직 controller
-
-## 우테코 최종 코딩테스트 가이드라인 for Controller 로직
-
-### 목차
-
-## 요구사항 읽고 기능 목록 작성 (중요한건 **bold**~)
-
-    - 게임형: `ApplicationStatus` (크게크게) VS 옵션 선택형: `MainOption` (명시적으로)
-    - 각각 `enum` 이름 생각해놓기
-    - 아래에 따라 `View` 작성하면서 기능 목록 써도 좋음
-
-### Application 만들어놓기
-
-``` 
-public class Application {
-    public static void main(String[] args) {
-            MainController mainController = new MainController(InputView.getInstance(), OutputView.getInstance());
-            mainController.play();
-    }
-}
-```
-
-### `Controller` 로직 결정
-
-- [`Supplier` 로직](#1.-로직-supplier) => [`BridgeGame`]처럼 다양하게 상황에 따라 게임이 얽히고 설켜 **복잡한 플로우차트**
-    - 플로우차트를 먼저 구상한 뒤에 그것과 똑같이 만들면 안정적임!!!
-    - `GameVariableRepository` 같은 클래스에 `시도 회수, 성공 여부` 등을 함께 관리하면 더 효율적!
-- [`Controller` 로직](#2.-로직-controller) => [`PairMatching`]처럼 시작은 간단하나, 각각 무거운 로직 +
-    - [`Repository`](#repository)랑 같이 사용하면 효과적으로!
-    - 각각의 `Controller`에서도 각각 성질에 따라서 눈치껏 다른 로직 진행
-- [`Runnable` 로직](#3.-로직-runnable)
-    - controller를 나누는 것과 비슷하나 한 클래스에 넣을 수 있음 (짧은 내용)
-
----
-
-## 1. 로직 supplier
-
-- **복잡한 플로우차트** 적합 (예. BridgeGame)
-
-``` 
-public class MainController {
-    private final InputView inputView;
-    private final OutputView outputView;
-    private final Map<ApplicationStatus, Supplier<ApplicationStatus>> gameGuide;
-
-    public MainController(InputView inputView, OutputView outputView) {
-        this.inputView = inputView;
-        this.outputView = outputView;
-        this.gameGuide = new EnumMap<>(ApplicationStatus.class); // 밑에 status 있음
-        initializeGameGuide();
-    }
-    
-    private void initializeGameGuide() {
-        gameGuide.put(ApplicationStatus.CREATE_BRIDGE, this::createBridge);
-    }
-    
-    public void play() {
-        ApplicationStatus applicationStatus = progress(ApplicationStatus.CREATE_BRIDGE); // 초기 status
-        while (applicationStatus.playable()) {
-            applicationStatus = process(applicationStatus);
-        }
-    }
-
-    public ApplicationStatus process(ApplicationStatus applicationStatus) {
-        try {
-            return gameGuide.get(applicationStatus).get();
-        } catch (
-        Exception exception) { 
-            return ApplicationStatus.APPLICATION_EXIT;
-        }
-    }
-
-    private ApplicationStatus createBridge() {
-      // 입력 하나 틀리면 다시 입력 => inputView에서 해결
-      // 입력 검증하다가 틀리면 다시 입력 => ApplicationStatus를 리턴하는 방식
-    }
-
-
-    private enum ApplicationStatus {
-        CREATE_BRIDGE,
-        APPLICATION_EXIT;
-
-        public boolean playable() {
-            return this != APPLICATION_EXIT;
-        }
-    }
-
-}
-```
-
----
-
-## 2. 로직 controller
-
-- 시작에서 **큰 옵션**을 받아 간단하나, 각각이 무거운 `controller`일 경우 분리 예) 페어매칭
-- *미리 분리*하는게 복잡도를 줄여서 편안함
-- 이 경우, 검증 로직이 포함되므로 `MainOption`은 분리해서 `public enum`으로 다루자!
-
-- Controllable 인터페이스 생성
-
-``` 
-@FunctionalInterface
-public interface Controllable {
-    void process();
-}
-```
-
-- MainOption 생성 (검증 있으니 따로 분리)
-
-```
-public enum MainOption {
-
-    ORDER_REGISTRATION("1"),
-    PAYMENT("2"),
-    APPLICATION_EXIT("3");
-
-    private final String command;
-
-    MainOption(String command) {
-        this.command = command;
-    }
-
-    public boolean isPlayable() {
-        return this != APPLICATION_EXIT;
-    }
-
-    public static MainOption from(String command) {
-        return Arrays.stream(MainOption.values())
-                .filter(option -> option.command.equals(command))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NO_MAIN_OPTION.getMessage()));
-    }
-    
-    //  "해당 메인 옵션이 존재하지 않습니다."
-
-}
-```
-
-- MainController에서 Controller switch 조절
-
-``` 
-
-public class MainController {
-private final Map<MainOption, Controllable> controllers;
-private final InputView inputView;
-private final OutputView outputView;
-
-    public MainController(InputView inputView, OutputView outputView) {
-        this.inputView = inputView;
-        this.outputView = outputView;
-        this.controllers = new EnumMap<>(MainOption.class);
-        initializeControllers();
-    }
-
-    private void initializeControllers() { // APPLICATION_EXIT은 안 만들어도 됨
-        controllers.put(MainOption.STATION_MANAGEMENT, new SubController(inputView, outputView));
-    }
-
-    public void play() {
-        // new InitializingController(outputView, inputView).process(); // initializing 로직이 있는 경우 (초기화)
-        MainOption mainOption;
-        do {
-            mainOption = inputView.readMainOption();
-            process(mainOption);
-        } while (mainOption.isPlayable());
-    }
-
-    private void process(MainOption mainOption) {
-        try {
-            controllers.get(mainOption).process();
-        } catch (NullPointerException ignored) { 
-        // 필요하면 예외 처리 (APPLICATION_EXIT은 안 만들어도 됨)
-        } 
-    }
-}
-```
-
-- SubController 만들기 (예시) **implements** 꼭 쓰기
-
-``` 
-public class SubController implements Controllable {
-
-    private final InputView inputView;
-    private final OutputView outputView;
-
-    public SubController(InputView inputView, OutputView outputView) {
-        this.inputView = inputView;
-        this.outputView = outputView;
-    }
-
-    @Override
-    public void process() {
-     // 작성 => 이 controller도 눈치껏 controller 로직을 선택해 적용해도 좋음! 
-    }
-
-}
-```
-
-## 3. 로직 runnable 
-- 비추! 이거 쓸 바에 애지간하면 Controller 로직 쓰기
-- 반복 넣으려면 따로 MainOption input을 매번 받아야함 => 로직 Controller 참고
-
-``` 
-
-public class MainController {
-private final InputView inputView;
-private final OutputView outputView;
-private final Map<ApplicationStatus, Runnable> gameGuide;
-
-    public MainController(InputView inputView, OutputView outputView) {
-        this.inputView = inputView;
-        this.outputView = outputView;
-        this.gameGuide = new EnumMap<>(ApplicationStatus.class); // 밑에 있음
-        initializeGameGuide();
-    }
-
-    private void initializeGameGuide() {
-        gameGuide.put(ApplicationStatus.CREW_LOADING, this::crewLoading);
-    }
-
-    public void play() {
-        process(ApplicationStatus.CREW_LOADING);
-    }
-    
-    private void process(ApplicationStatus applicationStatus) {
-        try {
-            controllers.get(applicationStatus).run();
-        } catch (IllegalArgumentException exception) {
-            outputView.printExceptionMessage(exception);
-        }
-    }
-
-    private void crewLoading() {
-    // 코드 작성
-    }
-    
-    private enum ApplicationStatus {
-        CREATE_BRIDGE,
-        APPLICATION_EXIT;
-
-        public boolean playable() {
-            return this != APPLICATION_EXIT;
-        }
-    }
-}
-```
-
----
-
-## repository
-
-``` 
-
-public class Crews {
-
-    private Crews() {
-    } // 선택
-
-    private static final List<Crew> crews = new ArrayList<>(); // 잦은 삭제면 LinkedList 고려
-
-    public static List<Crew> crews() {
-        return Collections.unmodifiableList(crews);
-    }
-
-    public static void addCrew(Crew crew) {
-        crews.add(crew);
-    }
-
-    public static boolean deleteCrewByName(String name) {
-        return crews.removeIf(line -> Objects.equals(line.getName(), name));
-    }
-
-    public static void deleteAll() {
-        crews.clear();
-    }
-
-    public static Crew findCrewByName(String name) {
-        return crews.stream()
-                .filter(crew -> crew.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException());
-    }
-
-}
-
-```
 
 ## enum
 
 ## Enum 관리
 
 ``` 
-public enum BridgeSign {
-    UP("U", 1), DOWN("D", 0);
+public enum FoodCategory {
+    JAPANESE("일식", 1, List.of("규동", "우동", "미소시루", "스시", "가츠동", "오니기리", "하이라이스", "라멘", "오코노미야끼")),
+    KOREAN("한식", 2, List.of("김밥", "김치찌개", "쌈밥", "된장찌개", "비빔밥", "칼국수", "불고기", "떡볶이", "제육볶음")),
+    CHINESE("중식", 3, List.of("깐풍기", "볶음면", "동파육", "짜장면", "짬뽕", "마파두부", "탕수육", "토마토 달걀볶음", "고추잡채")),
+    ASIAN("아시안", 4, List.of("팟타이", "카오 팟", "나시고렝", "파인애플 볶음밥", "쌀국수", "똠얌꿍", "반미", "월남쌈", "분짜")),
+    WESTERN("양식", 5, List.of("라자냐", "그라탱", "뇨끼", "끼슈", "프렌치 토스트", "바게트", "스파게티", "피자", "파니니"));
 
-    private final String sign;
+    private final String category;
     private final int number;
+    private final List<String> menu;
 
-    BridgeSign(String sign, int number) {
-        this.sign = sign;
+    FoodCategory(String category, int number, List<String> menu) {
+        this.category = category;
         this.number = number;
-    }
-    public static BridgeSign from(int number) {
-        return Arrays.stream(BridgeSign.values())
-                .filter(element -> element.number == number)
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.~~.getMessage()));
+        this.menu = menu;
     }
 
-    public static String numberToSign(int number) {
-        return from(number).sign;
+    public String getCategory() {
+        return category;
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    public List<String> getMenu() {
+        return menu;
+    }
+
+    public static String getCategoryByNumber(int number) {
+        for (FoodCategory foodCategory : FoodCategory.values()) {
+            if (foodCategory.getNumber() == number) {
+                return foodCategory.getCategory();
+            }
+        }
+        throw new IllegalArgumentException(ErrorMessage.MISMATCH_NUMBER.getMessage());
+    }
+
+    public static List<String> getMenuByCategory(String category) {
+        for (FoodCategory foodCategory : FoodCategory.values()) {
+            if (foodCategory.getCategory().equals(category)) {
+                return foodCategory.getMenu();
+            }
+        }
+        throw new IllegalArgumentException(ErrorMessage.MISMATCH_CATEGORY.getMessage());
+    }
 }
 ```
 
-- 변환하는 곳
+#### 조건에 일치하는 값 반환하는 get함수 예시
 
-``` 
-    public List<String> makeBridge(int size) {
-        return IntStream
-                .generate(bridgeNumberGenerator::generate)
-                .limit(size)
-                .mapToObj(BridgeSign::numberToSign)
-                .collect(Collectors.toList());
-    }
 ```
-
-## result formatter
-
-#### BridgeGame에서 Diagram
-
-- StringJoiner 활용
-
-``` 
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append(formatDiagram(upDiagram));
-        result.append(formatDiagram(downDiagram));
-
-        return result.toString();
-    }
-
-    private String formatDiagram(List<String> diagrams) {
-        StringJoiner stringJoiner = new StringJoiner(" | ", "[ ", " ]\n");
-        for (String diagram : diagrams) {
-            stringJoiner.add(diagram);
+    // 주어진 이름과 일치하는 메뉴를 찾아 해당 가격 반환하기
+    public static int getPriceByName(String menuName) {
+        for (Menu menu : Menu.values()) {
+            if (menu.getName().equals(menuName)) {
+                return menu.getPrice();
+            }
         }
-        return stringJoiner.toString();
+        throw new IllegalArgumentException();
     }
-```
 
-## ResultFormatter
-
-- 결과값을 출력하는 과정이 복잡할 때
-- 결과값을 formatting하는 일을 model이 하는 것은 부적절, view에서 하기에도 클 수 있다.
-
-
-- 이외의 `REGEX`를 활용한 `formatting`
-
-```
-   private enum Regex {
-        CASH_PRIZE_REGEX("\\B(?=(\\d{3})+(?!\\d))"),
-        DECIMAL_FORMAT("#,##0.0");
-
-        private final String regex;
-
-        Regex(String regex) {
-            this.regex = regex;
+    // 주어진 이름과 일치하는 메뉴를 찾아 해당 타입을 반환하기
+    public static String getTypeByName(String menuName) {
+        for (Menu menu : Menu.values()) {
+            if (menu.getName().equals(menuName)) {
+                return menu.getType();
+            }
         }
+        throw new IllegalArgumentException();
     }
-
-    // 12345 => 12,345
-    public static String formatRewardRate(BigDecimal rewardRate) {
-        return new DecimalFormat(Regex.DECIMAL_FORMAT.regex).format(rewardRate);
-    }
-
-    // 324329209.35823 => 324,329,209.4
-    private static String formatCashPrize(int cashPrize) {
-        return String.valueOf(cashPrize).replaceAll(Regex.CASH_PRIZE_REGEX.regex, ",");
-    }
-```
-
-## big decimal
-
-### 큰 숫자 다루기 `BigDecimal`
-
-- 소수점, 반올림을 빡세게 요구할 때
-- 너무 복잡한 수나, 아니면 돈을 다루는 경우에 바로 사용하자!
-- 퍼센트를 구한 다음에 `1,000.3%` 꼴로 출력하자
-- `ArithmeticException`을 조심하자!
-
-- dividend, divisor, quotient
-  ![img.png](../img.png)
-
-- 생성은 무조건 셋 중 하나
-    - `BigDecimal TWO_HUNDRED = new BigDecimal("200");`
-    - `BigDecimal ZERO = BigDecimal.ZERO;`
-    - `BigDecimal cashPrize = new BigDecimal(String.valueOf(winningRank.getCashPrize()))`
-
-- `add`, `subtract`만 해놓으면 아무 변화 없음 받아줘야함!!!
-
-``` 
- private void setRewardRate() {
-        BigDecimal ticketBudget = BigDecimal.ZERO;
-        BigDecimal totalCashPrize = BigDecimal.ZERO;
-        for (PlayerNumber player : playerNumbers.getPlayerNumbers()) {
-            WinningRank winningRank = WinningRank.from(calculateMatch(player), hasBonus(player));
-            ticketBudget = ticketBudget.add(new BigDecimal(String.valueOf(LOTTO_PRICE))); // 받아줘!!!
-            totalCashPrize = totalCashPrize.add(new BigDecimal(String.valueOf(winningRank.getCashPrize())));
-        }
-        rewardRate = calculateRewardRate(totalCashPrize, ticketBudget);
-    }
-```
-
-- 소수점 아래 둘째 자리에서 **반올림** `1.35 => 1.4`
-
-```
-    private static BigDecimal getSetScale(BigDecimal rewardRate) {
-        return rewardRate.setScale(1, RoundingMode.HALF_EVEN);
-    }
-```
-
-- 퍼센트 구하기 `totalCashPrize / ticketBudget * 100` + 소수점 아래 둘째 자리에서 반올림
-
-```
- private static BigDecimal calculateRewardRate(BigDecimal totalCashPrize, BigDecimal ticketBudget) {
-        if (ticketBudget.equals(BigDecimal.ZERO)) {
-            return BigDecimal.ZERO;
-        }
-        return totalCashPrize.multiply(new BigDecimal("100")).divide(ticketBudget, 1, RoundingMode.HALF_EVEN); 
-        // 퍼센트는 미리 곱하기
-        // 몇째 자리까지 왔으면 좋겠다는걸 두번째 숫자에!
-    }
-```
-
-## repository 저장소 개념 static 레포지토리
-
-``` 
-public class Crews {
     
-    private Crews() {
-    } // 선택
-
-    private static final List<Crew> crews = new ArrayList<>();
-
-    public static List<Crew> crews() {
-        return Collections.unmodifiableList(crews);
+    public static String getCategoryByNumber(int number) {
+        for (FoodCategory foodCategory : FoodCategory.values()) {
+            if (foodCategory.getNumber() == number) {
+                return foodCategory.getCategory();
+            }
+        }
+        throw new IllegalArgumentException(ErrorMessage.MISMATCH_NUMBER.getMessage());
     }
 
-    public static void addCrew(Crew crew) {
-        crews.add(crew);
+    public static List<String> getMenuByCategory(String category) {
+        for (FoodCategory foodCategory : FoodCategory.values()) {
+            if (foodCategory.getCategory().equals(category)) {
+                return foodCategory.getMenu();
+            }
+        }
+        throw new IllegalArgumentException(ErrorMessage.MISMATCH_CATEGORY.getMessage());
+    }
+    
+    MISMATCH_NUMBER("숫자와 일치하는 카테고리가 없습니다."),
+    MISMATCH_CATEGORY("일치하는 카테고리가 없습니다.");
+
+```
+
+## Decimal Format
+
+- 숫자를 특정 형태의 문자열로 출력할 때
+- OutputView에서 적용
+
+#### 가격(원화)으로 출력할 때 (예: 50,000원 or -4,000원)
+
+```
+    private static final String FORMAT_PRICE = "###,###원";
+    private static final String FORMAT_DISCOUNT = "-###,###원";
+
+    private String applyPriceFormat(int price) {
+        DecimalFormat decimalFormat = new DecimalFormat(FORMAT_PRICE);
+        return decimalFormat.format(price);
     }
 
-    public static boolean deleteCrewByName(String name) {
-        return crews.removeIf(line -> Objects.equals(line.getName(), name));
+    private String applyDiscountFormat(int discountAmount) {
+        DecimalFormat decimalFormat = new DecimalFormat(FORMAT_DISCOUNT);
+        return decimalFormat.format(discountAmount);
     }
+```
 
-    public static void deleteAll() {
-        crews.clear();
+#### 소수점 자리, 반올림 적용
+
+``` 
+    private final String YIELD_DECIMAL_PLACE = "0.0"; // 소수점 첫째 자리까지
+    private final String YIELD_PERCENT_SIGN = "%";
+    
+    public void printYield(double yield) {
+        DecimalFormat decimalPlace = new DecimalFormat(YIELD_DECIMAL_PLACE);
+        decimalPlace.setRoundingMode(RoundingMode.HALF_UP); // 소수점 둘째 자리에서 반올림해서 첫째 자리까지 표시
+        String decimalPointYield = decimalPlace.format(yield);
+        System.out.println(String.format(OutputText.YIELD, decimalPointYield, YIELD_PERCENT_SIGN));
     }
+```
 
-    public static Crew findCrewByName(String name) {
-        return crews.stream()
-                .filter(crew -> crew.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException());
+## 재입력 로직
+
+- 컨트롤러의 private 메서드로 작성.
+
+```
+    private List<String> readNames() {
+        Coach coach = new Coach();
+        while (true) {
+            try {
+                return coach.readNames(inputView.readName());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
-
-}
+    
+    // 모든 예외 발생에 대해 공통 에러 메시지를 지정하고 싶을 때
+    private int readDate() {
+        Date date = new Date();
+        while (true) {
+            try {
+                return date.read(inputView.readDate());
+            } catch (IllegalArgumentException e) {
+                System.out.println(ErrorMessage.INVALID_DATE.getMessage());
+            }
+        }
+    }
 ```
 
 ## file reader
