@@ -56,11 +56,6 @@
 ### 핵심 기능
 
 - 한줄 요약: 사용자가 날짜와 메뉴를 입력하면 이벤트 혜택 적용 결과를 알려준다.
-
-## 기능 목록
-
-### 핵심 기능
-
 - 한줄 요약: 한 주 동안의 점심 메뉴를 중복되지 않게 추천한다.
 
 #### 코치 이름(입력1)
@@ -130,8 +125,6 @@ public class OutputView {
   public static OutputView getInstance(){
       return instance;
   }
-  private OutputView() {
-  }
     
   public void printGameStart() {
     System.out.println(Message.OUTPUT_GAME_START.message);
@@ -160,8 +153,6 @@ public class InputView {
     public static InputView getInstance(){
         return instance;
     }
-    private InputView() {
-    }
 
     public String readMainOption() {
         System.out.println(Message.INPUT_MAIN_OPTION.message);
@@ -169,7 +160,6 @@ public class InputView {
         System.out.println(); // 입력 받고 한줄 띄우기
         return input;
     }
-
 
      private enum Message {
         INPUT_MAIN_OPTION("메인 옵션");
@@ -229,8 +219,8 @@ public class MainController {
 ```
 public enum ErrorMessage {
 
-    INVALID_NOT_NUMERIC("자연수만 입력 가능합니다."),
-    INVALID_OUT_OF_INT_RANGE("입력 범위를 초과하였습니다.");
+    INVALID_EMPTY("입력값이 없습니다."),
+    INVALID_ONLY_NUMERIC("숫자만 입력 가능합니다.");
 
     public static final String BASE_MESSAGE = "[ERROR] %s";
     private final String message;
@@ -254,7 +244,10 @@ public enum ErrorMessage {
 
 ```
 public class Util {
-
+    public static List<String> splitByComma(String input) {
+        return Arrays.asList(input.split(Regex.COMMA.regex));
+    }
+    
     public static String removeSpace(String input) {
         return input.replaceAll(Regex.SPACE.regex, Regex.NO_SPACE.regex);
     }
@@ -264,14 +257,9 @@ public class Util {
                 .replace(Regex.SQUARE_BRACKETS_END.regex, Regex.NO_SPACE.regex);
     }
 
-    public static List<String> splitByComma(String input) {
-        return Arrays.asList(input.split(Regex.COMMA.regex));
-    }
-
     public static List<String> formatProductInfo(String input) {
         return Util.splitByComma(Util.removeDelimiters(Util.removeSpace(input)));
     }
-
 
     private enum Regex {
         SPACE(" "), NO_SPACE(""),
@@ -284,9 +272,6 @@ public class Util {
             this.regex = regex;
         }
     }
-
-    private Util() {
-    }
 }
 ```
 
@@ -297,7 +282,6 @@ public class Util {
 
 ```
 public abstract class Validator {
-
     private static final Pattern NUMBER_REGEX = Pattern.compile("^[0-9]*$");
 
     abstract void validate(String input) throws IllegalArgumentException;
@@ -423,7 +407,6 @@ public class Constants {
         System.out.println(String.format("%d원 - %d개", element.getKey(), element.getValue()));
     }
 ```
-
 
 ## enum
 
