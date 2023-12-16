@@ -206,6 +206,17 @@ public class MainController {
     }
 
     public void play() {
+        // 시작 안내 문구(outputVeiw)
+        
+        // 입력 1 (String input = Console.readLine();)
+        // Car car = new Car();
+        // List<String> carNames = car.readName(input);
+        
+        // 입력 2
+        
+        // 값 출력에 사용될 수 있는 데이터(model에 의한 산출값)
+        
+        // 결과 출력
     }
 }
 ```
